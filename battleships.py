@@ -1,4 +1,4 @@
-print("Input Filename: ")
+print("Input Filename:", end=" ")
 filename = input()
 
 print()

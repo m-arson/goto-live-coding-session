@@ -9,16 +9,26 @@ counter = []
 with open(filename, "r") as f:
 	M = int(f.readline())
 
+	if not 0 < M < 10:
+		f.close()
+
 	for _ in range(2):
 		P.append([["_"] * M for _ in range(M)])
 
 	S = int(f.readline())
+
+	if not 0 < S < int(M**2/2):
+		f.close()
+
 	for i in range(2):
 		S = [list(map(int, i.split(","))) for i in f.readline().strip().split(":")]
 		for s in S:
 			P[i][s[0]][s[1]] = "B"
 
 	T = int(f.readline())
+
+	if not 0 < T < 100:
+		f.close()
 
 	for i in range(2):
 		count = 0

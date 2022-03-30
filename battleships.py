@@ -42,8 +42,8 @@ for inx, players in enumerate(P):
 for i,count in enumerate(counter):
 	print(f"P{i+1}:{count}")
 if counter[0] > counter[1]:
-	print("Player1 Win")
+	print("Player 1 wins")
 elif counter[0] < counter[1]:
-	print("Player2 Win")
+	print("Player 2 wins")
 else:
-	print("It is a Draw")
+	print("It is a draw")

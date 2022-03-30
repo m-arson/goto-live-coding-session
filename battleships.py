@@ -38,7 +38,6 @@ for inx, players in enumerate(P):
 			print(item, end=" ")
 		print()
 	print()
-print()
 
 for i,count in enumerate(counter):
 	print(f"P{i+1}:{count}")

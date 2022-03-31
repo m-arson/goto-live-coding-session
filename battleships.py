@@ -1,59 +1,69 @@
-print("Input Filename:", end=" ")
+def split_r(s):
+    s = s.strip().split(":")
+    return [list(map(int, i.split(","))) for i in s]
+
+N_PLAYER = 2
+N_LIFE = 2
+print("Input filename :", end=" ");
+
 filename = input()
 
-print()
-
-P = []
+Players = []
+Livestock = []
 counter = []
 
 with open(filename, "r") as f:
-	M = int(f.readline())
+    M = int(f.readline())
+    if not 0 < M < 100:
+        f.close()
+    
+    for i in range(N_PLAYER):
+        Players.append([["_"] * M for _ in range(M)])
+        Livestock.append([[N_LIFE] * M for _ in range(M)])
+    
+    S = int(f.readline())
 
-	if not 0 < M < 10:
-		f.close()
+    if not 0 < S <= M**2/2:
+        f.close()
 
-	for _ in range(2):
-		P.append([["_"] * M for _ in range(M)])
+    for i in range(N_PLAYER):
+        tmp = split_r(f.readline())
+        for tmp_ in tmp:
+            Players[i][tmp_[0]][tmp_[1]] = "B"
 
-	S = int(f.readline())
+    T = int(f.readline())
 
-	if not 0 < S < int(M**2/2):
-		f.close()
+    if not 0 < T < 100:
+        f.close()
 
-	for i in range(2):
-		S = [list(map(int, i.split(","))) for i in f.readline().strip().split(":")]
-		for s in S:
-			P[i][s[0]][s[1]] = "B"
+    for i in range(N_PLAYER):
+        count = 0
+        tmp = split_r(f.readline())
+        for tmp_ in tmp:
+            if Players[N_PLAYER-1-i][tmp_[0]][tmp_[1]] == "B":
+                if Livestock[N_PLAYER-1-i][tmp_[0]][tmp_[1]] > 1:
+                    Livestock[N_PLAYER-1-i][tmp_[0]][tmp_[1]] = Livestock[N_PLAYER-1-i][tmp_[0]][tmp_[1]] - 1
+                else:
+                    Players[N_PLAYER-1-i][tmp_[0]][tmp_[1]] = "X"
+                    count = count + 1
+            else:
+                Players[N_PLAYER-1-i][tmp_[0]][tmp_[1]] = "O"
+        counter.append(count)
 
-	T = int(f.readline())
+for inx, players in enumerate(Players):
+    print(f"Player{inx+1}")
+    for player in players:
+        for item in player:
+            print(item, end=" ")
+        print()
+    print()
 
-	if not 0 < T < 100:
-		f.close()
-
-	for i in range(2):
-		count = 0
-		T = [list(map(int, i.split(","))) for i in f.readline().strip().split(":")]
-		for t in T:
-			if P[1-i][t[0]][t[1]] == "B":
-				P[1-i][t[0]][t[1]] = "X"
-				count = count + 1
-			else:
-				P[1-i][t[0]][t[1]] = "O"
-		counter.append(count)
-
-for inx, players in enumerate(P):
-	print(f"Player{inx+1}")
-	for player in players:
-		for item in player:
-			print(item, end=" ")
-		print()
-	print()
-
-for i,count in enumerate(counter):
-	print(f"P{i+1}:{count}")
+for inx, count  in enumerate(counter):
+    print(f"P{inx+1}:{count}")
 if counter[0] > counter[1]:
-	print("Player 1 wins")
+    print("Player 1 wins")
+
 elif counter[0] < counter[1]:
-	print("Player 2 wins")
+    print("Player 2 wins")
 else:
-	print("It is a draw")
+    print("Is is a draw")

@@ -29,7 +29,7 @@ int main(void) {
 	uint8_t counter[N_SIZE];
 	
 	FILE *fp;
-	fp = fopen("/home/arson/Videos/live-coding/input.in", "r");
+	fp = fopen("input.in", "r");
 
 	uint8_t matrix_size = atoi(fgets(buff, BUFF_SIZE, fp));
 

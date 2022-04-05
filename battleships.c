@@ -8,7 +8,6 @@
 #define BUFF_SIZE (5)
 #define S_BUFF_SIZE (255)
 
-
 char **r_str(char *str, uint8_t size, const char *separator) {
     char **res = malloc(sizeof(char *) * size);
     char *split = strtok(str, separator);
@@ -25,7 +24,6 @@ int main(void) {
 	char buff[BUFF_SIZE];
 	char s_buff[S_BUFF_SIZE];
 	char ***matrix;
-	char *tmp;
 	uint8_t counter[N_SIZE];
 	
 	FILE *fp;
@@ -44,31 +42,40 @@ int main(void) {
 	}
 
 	uint8_t n_ship = atoi(fgets(buff, BUFF_SIZE, fp));
-	tmp = malloc(sizeof(char) * S_BUFF_SIZE);
-	
 	for(uint8_t i = 0; i < N_SIZE; ++i) {
-		memset(tmp, '\0', S_BUFF_SIZE);	
-		tmp = fgets(s_buff, S_BUFF_SIZE, fp);
+		char *tmp = fgets(s_buff, S_BUFF_SIZE, fp);
 		char **ships = r_str(tmp, n_ship, ":");
 		for(int j = 0; j < n_ship; ++j) {
 			char **pos = r_str(ships[j], 2, ",");
 			uint8_t x = atoi(pos[0]), y = atoi(pos[1]);
-			matrix[i][x][y] = 'B';
+			
+            for(int i = 0; i < 2; ++i)
+                free(pos[i]);
+            free(pos);
+
+            matrix[i][x][y] = 'B';
+            
 		}
-		free(ships);
+
+        for(int i = 0; i < 5; ++i)
+            free(ships[i]);
+        free(ships);
 	}
 	
 	uint8_t n_missile = atoi(fgets(buff, BUFF_SIZE, fp));
 	
 	for(uint8_t i = 0; i < N_SIZE; ++i) {
 		counter[i] = 0;
-		memset(tmp, '\0', S_BUFF_SIZE);	
-		tmp = fgets(s_buff, S_BUFF_SIZE, fp);
+		char *tmp = fgets(s_buff, S_BUFF_SIZE, fp);
 		char **missiles = r_str(tmp, n_missile, ":");
 		for(int j = 0; j < n_missile; ++j) {
 			char **pos = r_str(missiles[j], 2, ",");
 			uint8_t x = atoi(pos[0]), y = atoi(pos[1]);
 			
+            for(int i = 0; i < 2; ++i)
+                free(pos[i]);
+            free(pos);
+
 			if(matrix[N_SIZE-1-i][x][y] == 'B') {
 				matrix[N_SIZE-1-i][x][y] = 'X';
 				++counter[i];
@@ -76,7 +83,9 @@ int main(void) {
 			else
 				matrix[N_SIZE-1-i][x][y] = 'O';
 		}
-		free(missiles);
+		for(int i = 0; i < 5; ++i)
+            free(missiles[i]);
+        free(missiles);
 	}
 
 	for(uint8_t i=0;i<N_SIZE;++i) {
@@ -96,7 +105,12 @@ int main(void) {
 		printf("Player 2 wins\n");
 	else
 		printf("It is a draw\n");
-		
+	
+    for(int i = 0; i < 2; ++i) {
+        for(int j = 0; j < 5; ++j)
+            free(matrix[i][j]);
+        free(matrix[i]);
+    }
 	free(matrix);
 	fclose(fp);
 	return 0;

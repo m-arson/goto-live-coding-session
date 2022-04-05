@@ -125,6 +125,6 @@ int main(void) {
 		printf("It is a draw\n");
 	
 	fclose(fp);
-    free_memory('c', 3, 5, matrix, 2, 5);
+    	free_memory('c', 3, 5, matrix, 2, 5);
 	return 0;
 }

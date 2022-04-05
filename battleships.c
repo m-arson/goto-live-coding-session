@@ -3,10 +3,41 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdarg.h>
 
 #define N_SIZE (2)
 #define BUFF_SIZE (5)
 #define S_BUFF_SIZE (255)
+
+
+void free_memory(char type, int dim, int num_args, ...) {
+    if(type == 'c') {
+        va_list(s);
+        va_start(s, num_args);
+        if(dim == 2) {
+            char **ptr;
+            ptr = va_arg(s, char**);
+            int s1 = va_arg(s, int);
+            for(int i = 0; i < s1; ++i) {
+                free(ptr[i]);
+            }
+            free(ptr);
+        }
+        else if(dim == 3) {
+            char ***ptr;
+            ptr = va_arg(s, char***);
+            int s1 = va_arg(s, int), s2 = va_arg(s, int);
+            for(int i = 0; i < s1; ++i) {
+                for(int j = 0; j < s2; ++j) {
+                    free(ptr[i][j]);
+                }
+                free(ptr[i]);
+            }
+            free(ptr);
+        }
+        va_end(s);
+    }
+}
 
 char **r_str(char *str, uint8_t size, const char *separator) {
     char **res = malloc(sizeof(char *) * size);
@@ -48,18 +79,11 @@ int main(void) {
 		for(int j = 0; j < n_ship; ++j) {
 			char **pos = r_str(ships[j], 2, ",");
 			uint8_t x = atoi(pos[0]), y = atoi(pos[1]);
-			
-            for(int i = 0; i < 2; ++i)
-                free(pos[i]);
-            free(pos);
-
+            free_memory('c', 2, 4, pos, 2);
             matrix[i][x][y] = 'B';
-            
 		}
 
-        for(int i = 0; i < 5; ++i)
-            free(ships[i]);
-        free(ships);
+        free_memory('c', 2, 4, ships, 5);
 	}
 	
 	uint8_t n_missile = atoi(fgets(buff, BUFF_SIZE, fp));
@@ -71,11 +95,7 @@ int main(void) {
 		for(int j = 0; j < n_missile; ++j) {
 			char **pos = r_str(missiles[j], 2, ",");
 			uint8_t x = atoi(pos[0]), y = atoi(pos[1]);
-			
-            for(int i = 0; i < 2; ++i)
-                free(pos[i]);
-            free(pos);
-
+            free_memory('c', 2, 4, pos, 2);
 			if(matrix[N_SIZE-1-i][x][y] == 'B') {
 				matrix[N_SIZE-1-i][x][y] = 'X';
 				++counter[i];
@@ -83,9 +103,7 @@ int main(void) {
 			else
 				matrix[N_SIZE-1-i][x][y] = 'O';
 		}
-		for(int i = 0; i < 5; ++i)
-            free(missiles[i]);
-        free(missiles);
+		free_memory('c', 2, 4, missiles, 5);
 	}
 
 	for(uint8_t i=0;i<N_SIZE;++i) {
@@ -106,12 +124,7 @@ int main(void) {
 	else
 		printf("It is a draw\n");
 	
-    for(int i = 0; i < 2; ++i) {
-        for(int j = 0; j < 5; ++j)
-            free(matrix[i][j]);
-        free(matrix[i]);
-    }
-	free(matrix);
 	fclose(fp);
+    free_memory('c', 3, 5, matrix, 2, 5);
 	return 0;
 }
